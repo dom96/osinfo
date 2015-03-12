@@ -5,5 +5,7 @@ author        = "Dominik Picheta"
 description   = "Modules providing information about the OS."
 license       = "MIT"
 
+srcDir = "src"
+
 [Deps]
 Requires: "nim >= 0.10.3"
