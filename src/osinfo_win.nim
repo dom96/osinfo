@@ -35,7 +35,7 @@ type
     dwPageSize*: int32
     lpMinimumApplicationAddress*: pointer
     lpMaximumApplicationAddress*: pointer
-    dwActiveProcessorMask*: int32
+    dwActiveProcessorMask*: ptr int32
     dwNumberOfProcessors*: int32
     dwProcessorType*: int32
     dwAllocationGranularity*: int32
