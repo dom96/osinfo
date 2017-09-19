@@ -1,12 +1,6 @@
-#
-#
-#            Nim's Runtime Library
-#        (c) Copyright 2015 Dominik Picheta
-#
-#    See the file "copying.txt", included in this
-#    distribution, for details about the copyright.
-#
-import posix, strutils, os
+# Copyright (C) Dominik Picheta. All rights reserved.
+# MIT License. Look at license.txt for more info.
+import "$nim/lib/posix/posix", strutils, os
 
 when false:
   type
@@ -29,7 +23,7 @@ when false:
 proc getSystemVersion*(): string =
   result = ""
   
-  var unix_info: TUtsname
+  var unix_info: Utsname
   
   if uname(unix_info) != 0:
     os.raiseOSError(osLastError())
@@ -43,7 +37,11 @@ proc getSystemVersion*(): string =
   elif $unix_info.sysname == "Darwin":
     # Darwin
     result.add("Mac OS X ")
-    if "14" in $unix_info.release:
+    if "16" in $unix_info.release:
+      result.add("v10.12 Sierra")
+    elif "15" in $unix_info.release:
+      result.add("v10.11 El Capitan")
+    elif "14" in $unix_info.release:
       result.add("v10.10 Yosemite")
     elif "13" in $unix_info.release:
       result.add("v10.9 Mavericks")
@@ -65,21 +63,22 @@ proc getSystemVersion*(): string =
       result.add("v10.1 Puma")
     elif "1.3" in $unix_info.release:
       result.add("v10.0 Cheetah")
-    elif "0" in $unix_info.release:
-      result.add("Server 1.0 Hera")
+    else:
+      result.add("Unknown version")
   else:
     result.add($unix_info.sysname & " " & $unix_info.release)
     
     
-when false:
-  var unix_info: TUtsname
+when isMainModule:
+  var unix_info: Utsname
   echo(uname(unix_info))
   echo(unix_info.sysname)
   echo("8" in $unix_info.release)
+  echo(unix_info)
 
   echo(getSystemVersion())
 
-  var stfs: TStatfs
-  echo(statfs("sysinfo_posix.nim", stfs))
-  echo(stfs.f_files)
+  # var stfs: TStatfs
+  # echo(statfs("sysinfo_posix.nim", stfs))
+  # echo(stfs.f_files)
   

@@ -1,11 +1,5 @@
-#
-#
-#            Nim's Runtime Library
-#        (c) Copyright 2015 Dominik Picheta
-#
-#    See the file "copying.txt", included in this
-#    distribution, for details about the copyright.
-#
+# Copyright (C) Dominik Picheta. All rights reserved.
+# MIT License. Look at license.txt for more info.
 
 ## This module implements procedures which return various information about
 ## the user's computer.
@@ -79,8 +73,8 @@ type
     SuiteMask*: int
     ProductType*: int
     
-  TPartitionInfo* = tuple[FreeSpace, TotalSpace: Tfiletime]
-  
+  TPartitionInfo* = tuple[FreeSpace, TotalSpace: FileTime]
+
 const
   # SuiteMask - VersionInfo.SuiteMask
   VER_SUITE_BACKOFFICE* = 0x00000004
@@ -247,6 +241,11 @@ proc `$`*(osvi: TVersionInfo): string =
     
     var si = getSystemInfo()
     # Test for the specific product
+    if osvi.majorVersion == 10:
+      if osvi.ProductType == VER_NT_WORKSTATION:
+        result.add("Windows 10")
+      else: result.add("Windows Server 2016")
+
     if osvi.majorVersion == 6:
       if osvi.minorVersion == 0:
         if osvi.ProductType == VER_NT_WORKSTATION:
@@ -264,7 +263,7 @@ proc `$`*(osvi: TVersionInfo): string =
         if osvi.ProductType == VER_NT_WORKSTATION:
           result.add("Windows 8.1 ")
         else: result.add("Windows Server 2012 R2 ")
-    
+
       var dwType = getProductInfo(osvi.majorVersion, osvi.minorVersion, 0, 0)
       case dwType
       of PRODUCT_ULTIMATE:
@@ -386,7 +385,7 @@ proc `$`*(osvi: TVersionInfo): string =
 
 proc getFileSize*(file: string): BiggestInt =
   ## Retrieves the size of the specified file.
-  var fileData: TWIN32_FIND_DATA
+  var fileData: WIN32_FIND_DATA
 
   when useWinUnicode:
     var aa = newWideCString(file)
@@ -401,12 +400,12 @@ proc getFileSize*(file: string): BiggestInt =
 
 proc getDiskFreeSpaceEx*(lpDirectoryName: cstring, lpFreeBytesAvailableToCaller,
                          lpTotalNumberOfBytes,
-                         lpTotalNumberOfFreeBytes: var TFiletime): WINBOOL{.
+                         lpTotalNumberOfFreeBytes: var FileTime): WINBOOL{.
     stdcall, dynlib: "kernel32", importc: "GetDiskFreeSpaceExA".}
 
 proc getPartitionInfo*(partition: string): TPartitionInfo =
   ## Retrieves partition info, for example ``partition`` may be ``"C:\"``
-  var freeBytes, totalBytes, totalFreeBytes: TFiletime 
+  var freeBytes, totalBytes, totalFreeBytes: FileTime
   discard getDiskFreeSpaceEx(partition, freeBytes, totalBytes, 
                                totalFreeBytes)
   return (freeBytes, totalBytes)

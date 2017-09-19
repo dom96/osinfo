@@ -1,5 +1,4 @@
-[Package]
-name          = "osinfo"
+# Package
 version       = "0.1.0"
 author        = "Dominik Picheta"
 description   = "Modules providing information about the OS."
@@ -7,5 +6,5 @@ license       = "MIT"
 
 srcDir = "src"
 
-[Deps]
-Requires: "nim >= 0.10.3"
+# Dependencies
+Requires: "nim >= 0.17.0"
