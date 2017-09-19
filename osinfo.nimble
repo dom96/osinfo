@@ -7,4 +7,4 @@ license       = "MIT"
 srcDir = "src"
 
 # Dependencies
-Requires: "nim >= 0.17.0"
+requires "nim >= 0.17.0"
