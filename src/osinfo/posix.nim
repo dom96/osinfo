@@ -24,6 +24,7 @@ when false:
     importc, header: "<sys/vfs.h>".}
 
 
+
 proc getSystemVersion*(): string =
   result = ""
 
@@ -34,43 +35,29 @@ proc getSystemVersion*(): string =
 
   if $unix_info.sysname == "Linux":
     # Linux
-    result.add("Linux ")
-
-    result.add($unix_info.release & " ")
-    result.add($unix_info.machine)
+    result = "Linux $1 $2" % [$unix_info.release, $unix_info.machine]
   elif $unix_info.sysname == "Darwin":
     # Darwin
-    result.add("Mac OS X ")
-    if "16" in $unix_info.release:
-      result.add("v10.12 Sierra")
-    elif "15" in $unix_info.release:
-      result.add("v10.11 El Capitan")
-    elif "14" in $unix_info.release:
-      result.add("v10.10 Yosemite")
-    elif "13" in $unix_info.release:
-      result.add("v10.9 Mavericks")
-    elif "12" in $unix_info.release:
-      result.add("v10.8 Mountain Lion")
-    elif "11" in $unix_info.release:
-      result.add("v10.7 Lion")
-    elif "10" in $unix_info.release:
-      result.add("v10.6 Snow Leopard")
-    elif "9" in $unix_info.release:
-      result.add("v10.5 Leopard")
-    elif "8" in $unix_info.release:
-      result.add("v10.4 Tiger")
-    elif "7" in $unix_info.release:
-      result.add("v10.3 Panther")
-    elif "6" in $unix_info.release:
-      result.add("v10.2 Jaguar")
-    elif "1.4" in $unix_info.release:
-      result.add("v10.1 Puma")
-    elif "1.3" in $unix_info.release:
-      result.add("v10.0 Cheetah")
-    else:
-      result.add("Unknown version")
+    result = "Mac OS X "
+    result.add(
+      case $unix_info.release
+        of "16": "v10.12 Sierra"
+        of "15": "v10.11 El Capitan"
+        of "14": "v10.10 Yosemite"
+        of "13": "v10.9 Mavericks"
+        of "12": "v10.8 Mountain Lion"
+        of "11": "v10.7 Lion"
+        of "10": "v10.6 Snow Leopard"
+        of "9": "v10.5 Leopard"
+        of "8": "v10.4 Tiger"
+        of "7": "v10.3 Panther"
+        of "6": "v10.2 Jaguar"
+        of "1.4": "v10.1 Puma"
+        of "1.3": "v10.0 Cheetah"
+        else: "Unknown version"
+    )
   else:
-    result.add($unix_info.sysname & " " & $unix_info.release)
+    result = "$1 $2" % [$unix_info.release, $unix_info.machine]
 
 when isMainModule:
   var unix_info: Utsname
