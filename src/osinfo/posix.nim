@@ -1,10 +1,14 @@
 # Copyright (C) Dominik Picheta. All rights reserved.
 # MIT License. Look at license.txt for more info.
+
+when not defined(posix):
+  {.error: "This module is only supported on POSIX".}
+
 import "$nim/lib/posix/posix", strutils, os
 
 when false:
   type
-    Tstatfs {.importc: "struct statfs64", 
+    Tstatfs {.importc: "struct statfs64",
               header: "<sys/statfs.h>", final, pure.} = object
       f_type: int
       f_bsize: int
@@ -22,12 +26,12 @@ when false:
 
 proc getSystemVersion*(): string =
   result = ""
-  
+
   var unix_info: Utsname
-  
+
   if uname(unix_info) != 0:
     os.raiseOSError(osLastError())
-  
+
   if $unix_info.sysname == "Linux":
     # Linux
     result.add("Linux ")
@@ -67,8 +71,7 @@ proc getSystemVersion*(): string =
       result.add("Unknown version")
   else:
     result.add($unix_info.sysname & " " & $unix_info.release)
-    
-    
+
 when isMainModule:
   var unix_info: Utsname
   echo(uname(unix_info))
@@ -81,4 +84,4 @@ when isMainModule:
   # var stfs: TStatfs
   # echo(statfs("sysinfo_posix.nim", stfs))
   # echo(stfs.f_files)
-  
+
