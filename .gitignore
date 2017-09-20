@@ -4,3 +4,4 @@ nimsuggest.log
 # Binary files
 posix
 win
+*.exe
