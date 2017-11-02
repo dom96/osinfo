@@ -41,6 +41,7 @@ proc getSystemVersion*(): string =
     result = "Mac OS X "
     result.add(
       case $unix_info.release
+        of "17": "v10.13 High Sierra"
         of "16": "v10.12 Sierra"
         of "15": "v10.11 El Capitan"
         of "14": "v10.10 Yosemite"
