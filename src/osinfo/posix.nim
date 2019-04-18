@@ -3,8 +3,7 @@
 
 when not defined(posix):
   {.error: "This module is only supported on POSIX".}
-
-import "$nim/lib/posix/posix", strutils, os
+import strutils, os
 
 when false:
   type
@@ -23,7 +22,19 @@ when false:
   proc statfs(path: string, buf: var Tstatfs): int {.
     importc, header: "<sys/vfs.h>".}
 
+type
+  Utsname* {.importc: "struct utsname",
+              header: "<sys/utsname.h>",
+              final, pure.} = object ## struct utsname
+    sysname*,      ## Name of this implementation of the operating system.
+      nodename*,   ## Name of this node within the communications
+                   ## network to which this node is attached, if any.
+      release*,    ## Current release level of this implementation.
+      version*,    ## Current version level of this release.
+      machine*: cstring ## Name of the hardware type on which the
+                                     ## system is running.
 
+proc uname*(a1: var Utsname): cint {.importc, header: "<sys/utsname.h>".}
 
 proc getSystemVersion*(): string =
   result = ""
@@ -38,9 +49,13 @@ proc getSystemVersion*(): string =
     result = "Linux $1 $2" % [$unix_info.release, $unix_info.machine]
   elif $unix_info.sysname == "Darwin":
     # Darwin
+    var rel = $unix_info.release
+    if '.' in rel:
+      let split = rel.split(".")
+      rel = split[0]
     result = "Mac OS X "
     result.add(
-      case $unix_info.release
+      case rel
         of "17": "v10.13 High Sierra"
         of "16": "v10.12 Sierra"
         of "15": "v10.11 El Capitan"
@@ -55,7 +70,7 @@ proc getSystemVersion*(): string =
         of "6": "v10.2 Jaguar"
         of "1.4": "v10.1 Puma"
         of "1.3": "v10.0 Cheetah"
-        else: "Unknown version"
+        else: "Unknown version ($1)" % $unix_info.release
     )
   else:
     result = "$1 $2" % [$unix_info.release, $unix_info.machine]
