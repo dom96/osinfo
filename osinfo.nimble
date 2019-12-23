@@ -1,5 +1,5 @@
 # Package
-version       = "0.3.0"
+version       = "0.3.1"
 author        = "Dominik Picheta"
 description   = "Modules providing information about the OS."
 license       = "MIT"
