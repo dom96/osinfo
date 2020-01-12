@@ -183,16 +183,28 @@ proc getProcAddress*(hModule: int, lpProcName: cstring): pointer{.stdcall,
 proc getModuleHandleA*(lpModuleName: cstring): int{.stdcall,
      dynlib: "kernel32", importc: "GetModuleHandleA".}
 
+proc rtlGetVersion*(lpVersionInformation: var TOSVERSIONINFOEX): cint{.stdcall, dynlib: "ntdll",
+  importc: "RtlGetVersion".}
+
 proc getVersionInfo*(): TVersionInfo =
   ## Retrieves operating system info
   var osvi: TOSVERSIONINFOEX
   osvi.dwOSVersionInfoSize = sizeof(osvi).int32
   discard getVersionEx(osvi)
+  if osvi.dwMajorVersion >= 6:
+    # Starting with Windows 8, Windows does not report
+    # honest version info from the above function, so we
+    # need to use rtlGetVersion. Keeping the above
+    # usage for backwards compatibility.
+    #
+    # See https://stackoverflow.com/a/39173324 for more.
+    discard rtlGetVersion(osvi)
+
   result.majorVersion = osvi.dwMajorVersion
   result.minorVersion = osvi.dwMinorVersion
   result.buildNumber = osvi.dwBuildNumber
   result.platformID = osvi.dwPlatformId
-  result.SPVersion = $osvi.szCSDVersion
+  result.SPVersion = $cast[cstring](addr osvi.szCSDVersion)
   result.SPMajor = osvi.wServicePackMajor
   result.SPMinor = osvi.wServicePackMinor
   result.SuiteMask = osvi.wSuiteMask
@@ -242,26 +254,25 @@ proc `$`*(osvi: TVersionInfo): string =
     # Test for the specific product
     if osvi.majorVersion == 10:
       if osvi.ProductType == VER_NT_WORKSTATION:
-        result.add("Windows 10 ")
+        result.add("Windows 10")
       else: result.add("Windows Server 2016")
-
     if osvi.majorVersion == 6:
       if osvi.minorVersion == 0:
         if osvi.ProductType == VER_NT_WORKSTATION:
-          result.add("Windows Vista ")
-        else: result.add("Windows Server 2008 ")
+          result.add("Windows Vista")
+        else: result.add("Windows Server 2008")
       elif osvi.minorVersion == 1:
         if osvi.ProductType == VER_NT_WORKSTATION:
-          result.add("Windows 7 ")
-        else: result.add("Windows Server 2008 R2 ")
+          result.add("Windows 7")
+        else: result.add("Windows Server 2008 R2")
       elif osvi.minorVersion == 2:
         if osvi.ProductType == VER_NT_WORKSTATION:
-          result.add("Windows 8 ")
-        else: result.add("Windows Server 2012 ")
+          result.add("Windows 8")
+        else: result.add("Windows Server 2012")
       elif osvi.minorVersion == 3:
         if osvi.ProductType == VER_NT_WORKSTATION:
-          result.add("Windows 8.1 ")
-        else: result.add("Windows Server 2012 R2 ")
+          result.add("Windows 8.1")
+        else: result.add("Windows Server 2012 R2")
 
       let dwType = getProductInfo(osvi.majorVersion, osvi.minorVersion, 0, 0)
       case dwType
