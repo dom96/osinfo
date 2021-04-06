@@ -108,7 +108,13 @@ const
   PRODUCT_DATACENTER_SERVER_V* = 0x00000025
   PRODUCT_ENTERPRISE* = 0x00000004
   PRODUCT_ENTERPRISE_E* = 0x00000046
+  PRODUCT_ENTERPRISE_EVALUATION* = 0x00000048
   PRODUCT_ENTERPRISE_N* = 0x0000001B
+  PRODUCT_ENTERPRISE_N_EVALUATION* = 0x00000054
+  PRODUCT_ENTERPRISE_S* = 0x0000007D
+  PRODUCT_ENTERPRISE_S_EVALUATION* = 0x00000081
+  PRODUCT_ENTERPRISE_S_N* = 0x0000007E
+  PRODUCT_ENTERPRISE_S_N_EVALUATION* = 0x00000082
   PRODUCT_ENTERPRISE_SERVER* = 0x0000000A
   PRODUCT_ENTERPRISE_SERVER_CORE* = 0x0000000E
   PRODUCT_ENTERPRISE_SERVER_CORE_V* = 0x00000029
@@ -120,10 +126,14 @@ const
   PRODUCT_HOME_PREMIUM* = 0x00000003
   PRODUCT_HOME_PREMIUM_E* = 0x00000044
   PRODUCT_HOME_PREMIUM_N* = 0x0000001A
+  PRODUCT_EDUCATION* = 0x00000079
+  PRODUCT_EDUCATION_N* = 0x0000007A
   PRODUCT_HYPERV* = 0x0000002A
   PRODUCT_MEDIUMBUSINESS_SERVER_MANAGEMENT* = 0x0000001E
   PRODUCT_MEDIUMBUSINESS_SERVER_MESSAGING* = 0x00000020
   PRODUCT_MEDIUMBUSINESS_SERVER_SECURITY* = 0x0000001F
+  PRODUCT_PRO_WORKSTATION* = 0x000000A1
+  PRODUCT_PRO_WORKSTATION_N* = 0x000000A2
   PRODUCT_PROFESSIONAL* = 0x00000030
   PRODUCT_PROFESSIONAL_E* = 0x00000045
   PRODUCT_PROFESSIONAL_N* = 0x00000031
@@ -139,6 +149,7 @@ const
   PRODUCT_STARTER_E* = 0x00000042
   PRODUCT_STARTER_N* = 0x0000002F
   PRODUCT_STORAGE_ENTERPRISE_SERVER* = 0x00000017
+  PRODUCT_STORAGE_ENTERPRISE_SERVER_CORE* = 0x0000002E
   PRODUCT_STORAGE_EXPRESS_SERVER* = 0x00000014
   PRODUCT_STORAGE_STANDARD_SERVER* = 0x00000015
   PRODUCT_STORAGE_WORKGROUP_SERVER* = 0x00000016
@@ -276,6 +287,14 @@ proc `$`*(osvi: TVersionInfo): string =
 
       let dwType = getProductInfo(osvi.majorVersion, osvi.minorVersion, 0, 0)
       case dwType
+      of PRODUCT_PRO_WORKSTATION:
+        result.add("Pro for Workstations")
+      of PRODUCT_PRO_WORKSTATION_N:
+        result.add("Pro for Workstations N")
+      of PRODUCT_EDUCATION:
+        result.add("Education")
+      of PRODUCT_EDUCATION_N:
+        result.add("Education N")
       of PRODUCT_ULTIMATE:
         result.add("Ultimate Edition")
       of PRODUCT_PROFESSIONAL:
@@ -286,6 +305,22 @@ proc `$`*(osvi: TVersionInfo): string =
         result.add("Home Basic Edition")
       of PRODUCT_ENTERPRISE:
         result.add("Enterprise Edition")
+      of PRODUCT_ENTERPRISE_E:
+        result.add("Enterprise E")
+      of PRODUCT_ENTERPRISE_EVALUATION:
+        result.add("Enterprise Evaluation")
+      of PRODUCT_ENTERPRISE_N:
+        result.add("Enterprise N")
+      of PRODUCT_ENTERPRISE_N_EVALUATION:
+        result.add("Enterprise N Evaluation")
+      of PRODUCT_ENTERPRISE_S:
+        result.add("Enterprise 2015 LTSB")
+      of PRODUCT_ENTERPRISE_S_EVALUATION:
+        result.add("Enterprise 2015 LTSB Evaluation")
+      of PRODUCT_ENTERPRISE_S_N:
+        result.add("Enterprise 2015 LTSB N")
+      of PRODUCT_ENTERPRISE_S_N_EVALUATION:
+        result.add("Enterprise 2015 LTSB N Evaluation")
       of PRODUCT_BUSINESS:
         result.add("Business Edition")
       of PRODUCT_STARTER:
@@ -296,12 +331,20 @@ proc `$`*(osvi: TVersionInfo): string =
         result.add("Datacenter Edition")
       of PRODUCT_DATACENTER_SERVER_CORE:
         result.add("Datacenter Edition (core installation)")
+      of PRODUCT_DATACENTER_SERVER_CORE_V:
+        result.add("Server Datacenter without Hyper-V (core installation)")
+      of PRODUCT_DATACENTER_SERVER_V:
+        result.add("Server Datacenter without Hyper-V (full installation)")
       of PRODUCT_ENTERPRISE_SERVER:
-        result.add("Enterprise Edition")
+        result.add("Server Enterprise (full installation)")
       of PRODUCT_ENTERPRISE_SERVER_CORE:
-        result.add("Enterprise Edition (core installation)")
+        result.add("Server Enterprise (core installation)")
+      of PRODUCT_ENTERPRISE_SERVER_CORE_V:
+        result.add("Server Enterprise without Hyper-V (core installation)")
+      of PRODUCT_ENTERPRISE_SERVER_V:
+        result.add("Server Enterprise without Hyper-V (full installation)")
       of PRODUCT_ENTERPRISE_SERVER_IA64:
-        result.add("Enterprise Edition for Itanium-based Systems")
+        result.add("Server Enterprise for Itanium-based Systems")
       of PRODUCT_SMALLBUSINESS_SERVER:
         result.add("Small Business Server")
       of PRODUCT_STANDARD_SERVER:
@@ -310,6 +353,16 @@ proc `$`*(osvi: TVersionInfo): string =
         result.add("Standard Edition (core installation)")
       of PRODUCT_WEB_SERVER:
         result.add("Web Server Edition")
+      of PRODUCT_STORAGE_ENTERPRISE_SERVER:
+        result.add("Storage Server Enterprise")
+      of PRODUCT_STORAGE_ENTERPRISE_SERVER_CORE:
+        result.add("Storage Server Enterprise (core installation) ")
+      of PRODUCT_STORAGE_EXPRESS_SERVER:
+        result.add("Storage Server Express")
+      of PRODUCT_STORAGE_STANDARD_SERVER:
+        result.add("Storage Server Standard")
+      of PRODUCT_STORAGE_WORKGROUP_SERVER:
+        result.add("Storage Server Workgroup")
       else:
         discard
     # End of Windows 6.*
