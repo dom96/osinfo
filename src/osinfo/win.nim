@@ -265,26 +265,28 @@ proc `$`*(osvi: TVersionInfo): string =
     # Test for the specific product
     if osvi.majorVersion == 10:
       if osvi.ProductType == VER_NT_WORKSTATION:
-        result.add("Windows 10")
-      else: result.add("Windows Server 2016")
+        result.add("Windows 10 ")
+      else: result.add("Windows Server 2016 ")
     if osvi.majorVersion == 6:
       if osvi.minorVersion == 0:
         if osvi.ProductType == VER_NT_WORKSTATION:
-          result.add("Windows Vista")
-        else: result.add("Windows Server 2008")
+          result.add("Windows Vista ")
+        else: result.add("Windows Server 2008 ")
       elif osvi.minorVersion == 1:
         if osvi.ProductType == VER_NT_WORKSTATION:
-          result.add("Windows 7")
-        else: result.add("Windows Server 2008 R2")
+          result.add("Windows 7 ")
+        else: result.add("Windows Server 2008 R2 ")
       elif osvi.minorVersion == 2:
         if osvi.ProductType == VER_NT_WORKSTATION:
-          result.add("Windows 8")
-        else: result.add("Windows Server 2012")
+          result.add("Windows 8 ")
+        else: result.add("Windows Server 2012 ")
       elif osvi.minorVersion == 3:
         if osvi.ProductType == VER_NT_WORKSTATION:
-          result.add("Windows 8.1")
-        else: result.add("Windows Server 2012 R2")
+          result.add("Windows 8.1 ")
+        else: result.add("Windows Server 2012 R2 ")
 
+    # The GetProductInfo return result works when dwOSMajorVersion minimum value is 6.
+    if osvi.majorVersion >= 6:
       let dwType = getProductInfo(osvi.majorVersion, osvi.minorVersion, 0, 0)
       case dwType
       of PRODUCT_PRO_WORKSTATION:
@@ -371,12 +373,12 @@ proc `$`*(osvi: TVersionInfo): string =
       if getSystemMetrics(SM_SERVERR2) != 0:
         result.add("Windows Server 2003 R2, ")
       elif (osvi.SuiteMask and VER_SUITE_PERSONAL) != 0: # Not sure if this will work
-        result.add("Windows Storage Server 2003")
+        result.add("Windows Storage Server 2003 ")
       elif (osvi.SuiteMask and VER_SUITE_WH_SERVER) != 0:
-        result.add("Windows Home Server")
+        result.add("Windows Home Server ")
       elif osvi.ProductType == VER_NT_WORKSTATION and
           si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64:
-        result.add("Windows XP Professional x64 Edition")
+        result.add("Windows XP Professional x64 Edition ")
       else:
         result.add("Windows Server 2003, ")
 
