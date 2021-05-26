@@ -29,8 +29,8 @@ type
     sysname*,      ## Name of this implementation of the operating system.
     nodename*,     ## Name of this node within the communications
                    ## network to which this node is attached, if any.
-    release*,    ## Current release level of this implementation.
-    version*,    ## Current version level of this release.
+    release*,      ## Current release level of this implementation.
+    version*,      ## Current version level of this release.
     machine*: cstring ## Name of the hardware type on which the
                                      ## system is running.
 
@@ -90,4 +90,3 @@ when isMainModule:
   # var stfs: TStatfs
   # echo(statfs("sysinfo_posix.nim", stfs))
   # echo(stfs.f_files)
-
