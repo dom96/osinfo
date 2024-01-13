@@ -11,6 +11,9 @@ import winlean
 const
   INVALID_HANDLE_VALUE = int(- 1) # GetStockObject
 
+when not declared(useWinUnicode):
+  const useWinUnicode* = not defined(useWinAnsi)
+
 type
   TMEMORYSTATUSEX {.final, pure.} = object
     dwLength: int32
@@ -384,12 +387,12 @@ proc `$`*(osvi: TVersionInfo): string =
 
       # Test for the specific product
       if osvi.ProductType != VER_NT_WORKSTATION:
-        if ze(si.wProcessorArchitecture) == PROCESSOR_ARCHITECTURE_IA64:
+        if si.wProcessorArchitecture.uint == PROCESSOR_ARCHITECTURE_IA64:
           if (osvi.SuiteMask and VER_SUITE_DATACENTER) != 0:
             result.add("Datacenter Edition for Itanium-based Systems")
           elif (osvi.SuiteMask and VER_SUITE_ENTERPRISE) != 0:
             result.add("Enterprise Edition for Itanium-based Systems")
-        elif ze(si.wProcessorArchitecture) == PROCESSOR_ARCHITECTURE_AMD64:
+        elif si.wProcessorArchitecture.uint == PROCESSOR_ARCHITECTURE_AMD64:
           if (osvi.SuiteMask and VER_SUITE_DATACENTER) != 0:
             result.add("Datacenter x64 Edition")
           elif (osvi.SuiteMask and VER_SUITE_ENTERPRISE) != 0:
@@ -438,9 +441,9 @@ proc `$`*(osvi: TVersionInfo): string =
     result.add(" (build " & $osvi.buildNumber & ")")
 
     if osvi.majorVersion >= 6:
-      if ze(si.wProcessorArchitecture) == PROCESSOR_ARCHITECTURE_AMD64:
+      if si.wProcessorArchitecture.uint == PROCESSOR_ARCHITECTURE_AMD64:
         result.add(", 64-bit")
-      elif ze(si.wProcessorArchitecture) == PROCESSOR_ARCHITECTURE_INTEL:
+      elif si.wProcessorArchitecture.uint == PROCESSOR_ARCHITECTURE_INTEL:
         result.add(", 32-bit")
   else:
     # Windows 98 etc...
